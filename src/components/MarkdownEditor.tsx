@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import { Button } from './ui/Button';
 
 interface MarkdownEditorProps {
   value: string;
@@ -46,10 +45,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
         .replace(/<code[^>]*>(.*?)<\/code>/gi, '`$1`')
         .replace(/<a[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi, '[$2]($1)')
-        .replace(/<ul[^>]*>(.*?)<\/ul>/gis, (match, content) => {
+        .replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (match, content) => {
           return content.replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n');
         })
-        .replace(/<ol[^>]*>(.*?)<\/ol>/gis, (match, content) => {
+        .replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, (match, content) => {
           let index = 1;
           return content.replace(/<li[^>]*>(.*?)<\/li>/gi, () => `${index++}. $1\n`);
         })
@@ -80,18 +79,15 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   return (
     <div className={`markdown-editor h-full flex flex-col ${className}`} ref={editorRef}>
-      
-      
       <div className="editor-container flex-1 min-h-0">
         <MDEditor
           value={value}
           onChange={(val) => onChange(val || '')}
           preview={'live'}
           height="100%"
-          placeholder={placeholder}
           className="h-full"
+          data-color-mode="light"
           textareaProps={{
-            placeholder,
             style: { fontSize: '14px' }
           }}
         />
