@@ -15,7 +15,7 @@ export default function Home() {
     <div className="vh-100 w-100 bg-light">
       <div className="h-100 w-100 d-flex">
         {/* Left half - Editor */}
-        <div className="w-50 h-100 pe-1">
+        <div className="w-50 h-100 ">
           <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <MyEditor
               className="h-100"
@@ -25,7 +25,7 @@ export default function Home() {
         </div>
         
         {/* Right half - Preview */}
-        <div className="w-50 h-100 ps-1">
+        <div className="w-50 h-100 ">
           <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <Preview content={content} />
           </div>

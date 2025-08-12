@@ -66,7 +66,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
               toolbar_sticky_offset: 0,
-              content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; padding: 8px; }',
+              content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; padding: 8px; } img { max-width: 100%; height: auto; }',
               skin: 'oxide',
               content_css: 'default',
               resize: false,
@@ -94,8 +94,8 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   // Function to clean elements recursively
                   function cleanElement(element: Element) {
                     // Keep only allowed tags
-                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'blockquote', 'a'];
-                    const allowedAttributes = ['src', 'alt', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
+                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'picture', 'blockquote', 'a'];
+                    const allowedAttributes = ['src', 'alt', 'style', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
                     
                     // Remove ALL style attributes and classes
                     element.removeAttribute('style');
@@ -110,7 +110,6 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                       }
                     });
                     
-                    // For images, only keep src and alt attributes, no styling
                     if (element.tagName.toLowerCase() === 'img') {
                       const src = element.getAttribute('src');
                       const alt = element.getAttribute('alt') || 'Image';

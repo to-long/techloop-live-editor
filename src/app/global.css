@@ -11,6 +11,10 @@ body {
   margin: 0;
 }
 
+img {
+  max-width: 100%;  
+}
+
 /* Preview styles - matching TinyMCE editor */
 .preview-content {
   background-color: #ffffff;
