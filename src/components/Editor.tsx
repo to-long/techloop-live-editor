@@ -54,8 +54,8 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                 'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
-                'paste', 'textpattern', 'nonbreaking',
-                'emoticons', 'hr', 'pagebreak', 'quickbars', 'save', 'template'
+                'nonbreaking',
+                'emoticons', 'pagebreak', 'quickbars', 'save'
               ],
               toolbar: [
                 'alignleft aligncenter alignright alignjustify',
@@ -64,7 +64,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'link image media table insertimageurl | code '
               ].join(' '),
               toolbar_mode: 'wrap',
-                            toolbar_sticky: true,
+              toolbar_sticky: true,
               toolbar_sticky_offset: 0,
               content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; padding: 8px; }',
               skin: 'oxide',
@@ -77,22 +77,10 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               min_height: 300,
               max_height: 800,
               contextmenu: 'link image table configurepermanentpen',
-              quickbars_selection_toolbar: 'bold underline h1 h2 h3 quicklink blockquote',
-              quickbars_insert_toolbar: 'h1 h2 h3 insertimageurl',
-              textpattern_patterns: [
-                {start: '*', end: '*', format: 'italic'},
-                {start: '**', end: '**', format: 'bold'},
-                {start: '#', format: 'h1'},
-                {start: '##', format: 'h2'},
-                {start: '###', format: 'h3'},
-                {start: '####', format: 'h4'},
-                {start: '#####', format: 'h5'},
-                {start: '######', format: 'h6'},
-                {start: '1. ', cmd: 'InsertOrderedList'},
-                {start: '* ', cmd: 'InsertUnorderedList'},
-                {start: '- ', cmd: 'InsertUnorderedList'}
-              ],
-              setup: function(editor) {
+              quickbars_selection_toolbar: 'bold h1 h2 h3 quicklink blockquote',
+              // quickbars_insert_toolbar: 'h1 h2 h3 insertimageurl',
+
+              setup: function(editor: any) {
                 // Add custom button for inserting image from URL
                 editor.ui.registry.addButton('insertimageurl', {
                   text: '📷',
@@ -104,20 +92,88 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                     }
                   }
                 });
+
+                // Custom paste handler to clean content
+                editor.on('PastePreProcess', function(e: any) {
+                  const content = e.content;
+                  
+                  // Create a temporary div to parse the HTML
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = content;
+                  
+                  // Function to clean elements recursively
+                  function cleanElement(element: Element) {
+                    // Keep only allowed tags
+                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'button', 'label'];
+                    const allowedAttributes = ['src', 'alt', 'style', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
+                    
+                    // Remove all attributes except allowed ones
+                    const attributes = Array.from(element.attributes);
+                    attributes.forEach(attr => {
+                      if (!allowedAttributes.includes(attr.name)) {
+                        element.removeAttribute(attr.name);
+                      }
+                    });
+                    
+                    // For images, only keep src and alt attributes
+                    if (element.tagName.toLowerCase() === 'img') {
+                      const src = element.getAttribute('src');
+                      const alt = element.getAttribute('alt') || 'Image';
+                      element.outerHTML = `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto;" />`;
+                      return;
+                    }
+                    
+                    // For bold text, convert to <strong>
+                    if (element.tagName.toLowerCase() === 'b') {
+                      element.outerHTML = `<strong>${element.innerHTML}</strong>`;
+                      return;
+                    }
+                    
+                    // Remove elements that are not allowed
+                    if (!allowedTags.includes(element.tagName.toLowerCase())) {
+                      // If it's a text node or allowed element, keep it
+                      if (element.nodeType === Node.TEXT_NODE || allowedTags.includes(element.tagName.toLowerCase())) {
+                        // Keep the content but clean children
+                        const children = Array.from(element.children);
+                        children.forEach(child => {
+                          if (!allowedTags.includes(child.tagName.toLowerCase())) {
+                            // Replace with just the text content
+                            child.outerHTML = child.textContent || '';
+                          } else {
+                            cleanElement(child);
+                          }
+                        });
+                      } else {
+                        // Replace with text content
+                        element.outerHTML = element.textContent || '';
+                      }
+                    } else {
+                      // Clean children of allowed elements
+                      const children = Array.from(element.children);
+                      children.forEach(child => cleanElement(child));
+                    }
+                  }
+                  
+                  // Clean the content
+                  cleanElement(tempDiv);
+                  
+                  // Update the paste content
+                  e.content = tempDiv.innerHTML;
+                });
               },
-            paste_data_images: true,
-            paste_as_text: false,
-            paste_enable_default_filters: true,
-            paste_word_valid_elements: 'b,strong,i,em,h1,h2,h3,h4,h5,h6',
-            paste_retain_style_properties: 'color background-color font-size font-weight font-style text-decoration',
-            paste_remove_styles_if_webkit: false,
-            paste_remove_styles: false,
-            paste_auto_cleanup_on_paste: false,
-            paste_convert_word_fake_lists: false,
-            paste_use_dialog: false,
-            paste_merge_formats: true,
-            paste_convert_unsafe_svg: true,
-            paste_webkit_styles: 'color background-color font-size font-weight font-style text-decoration'
+              paste_data_images: true,
+              paste_as_text: false,
+              paste_enable_default_filters: false,
+              paste_word_valid_elements: 'h1,h2,h3,h4,h5,h6,strong,b,img,table,thead,tbody,tr,th,td,ul,ol,li,form,input,textarea,select,option,button,label',
+              paste_retain_style_properties: '',
+              paste_remove_styles_if_webkit: true,
+              paste_remove_styles: true,
+              paste_auto_cleanup_on_paste: true,
+              paste_convert_word_fake_lists: false,
+              paste_use_dialog: false,
+              paste_merge_formats: false,
+              paste_convert_unsafe_svg: true,
+              paste_webkit_styles: ''
           }}
         />
       </div>
