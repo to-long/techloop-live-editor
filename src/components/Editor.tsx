@@ -5,15 +5,18 @@ import { Editor } from '@tinymce/tinymce-react';
 
 interface MarkdownEditorProps {
   className?: string;
+  onContentChange?: (content: string) => void;
 }
 
 export const MyEditor: React.FC<MarkdownEditorProps> = ({
   className = '',
+  onContentChange,
 }) => {
   const [content, setContent] = useState('');
 
   const handleEditorChange = (content: string) => {
     setContent(content);
+    onContentChange?.(content);
   };
 
   return (
