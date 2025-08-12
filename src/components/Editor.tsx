@@ -1,7 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import TinyMCE to avoid SSR issues
+const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => ({ default: mod.Editor })), {
+  ssr: false,
+  loading: () => <div className="d-flex align-items-center justify-content-center h-100">Loading editor...</div>
+});
 
 interface MarkdownEditorProps {
   className?: string;
@@ -13,15 +19,30 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   onContentChange,
 }) => {
   const [content, setContent] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleEditorChange = (content: string) => {
     setContent(content);
     onContentChange?.(content);
   };
 
+  if (!isClient) {
+    return (
+      <div className={`tinymce-editor h-100 d-flex flex-column ${className}`}>
+        <div className="editor-container flex-fill d-flex align-items-center justify-content-center">
+          <div className="text-muted">Loading editor...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`tinymce-editor h-full flex flex-col ${className}`}>
-      <div className="editor-container flex-1 min-h-0">
+    <div className={`tinymce-editor h-100 d-flex flex-column ${className}`}>
+      <div className="editor-container flex-fill">
         <Editor
           apiKey="rxsu0ox8enqzvhq1utetup9eh9z2y5fh5o42jbe29ppkg4n9"
           value={content}

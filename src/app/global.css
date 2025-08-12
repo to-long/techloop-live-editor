@@ -1,12 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
   --foreground: #171717;
   --background: #ffffff;
 }
-
 
 body {
   color: var(--foreground);
@@ -14,7 +11,15 @@ body {
   margin: 0;
 }
 
-/* Preview styles */
+/* Preview styles - matching TinyMCE editor */
+.preview-content {
+  background-color: #ffffff;
+  color: #171717;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .preview-content h1 {
   font-size: 1.875rem;
   font-weight: 700;

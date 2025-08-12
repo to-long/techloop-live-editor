@@ -12,21 +12,21 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-50">
-      <div className="h-full w-full flex">
+    <div className="vh-100 w-100 bg-light">
+      <div className="h-100 w-100 d-flex">
         {/* Left half - Editor */}
-        <div className="w-1/2 h-full p-4 pr-2">
-          <div className="h-full w-full bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="w-50 h-100 pe-1">
+          <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <MyEditor
-              className="h-full"
+              className="h-100"
               onContentChange={handleContentChange}
             />
           </div>
         </div>
         
         {/* Right half - Preview */}
-        <div className="w-1/2 h-full p-4 pl-2">
-          <div className="h-full w-full bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="w-50 h-100 ps-1">
+          <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <Preview content={content} />
           </div>
         </div>
