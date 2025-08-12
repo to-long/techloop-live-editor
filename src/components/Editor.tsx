@@ -61,7 +61,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'alignleft aligncenter alignright alignjustify',
                 'bullist numlist',
                 'outdent indent',
-                'link image media table insertimageurl | code '
+                'link image media table | code '
               ].join(' '),
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
@@ -82,16 +82,6 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
 
               setup: function(editor: any) {
                 // Add custom button for inserting image from URL
-                editor.ui.registry.addButton('insertimageurl', {
-                  text: '📷',
-                  tooltip: 'Insert Image from URL',
-                  onAction: function() {
-                    const url = prompt('Enter image URL:');
-                    if (url) {
-                      editor.insertContent('<img src="' + url + '" alt="Image" style="max-width: 100%; height: auto;" />');
-                    }
-                  }
-                });
 
                 // Custom paste handler to clean content
                 editor.on('PastePreProcess', function(e: any) {
@@ -104,10 +94,15 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   // Function to clean elements recursively
                   function cleanElement(element: Element) {
                     // Keep only allowed tags
-                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'button', 'label'];
-                    const allowedAttributes = ['src', 'alt', 'style', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
+                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'blockquote', 'a'];
+                    const allowedAttributes = ['src', 'alt', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
                     
-                    // Remove all attributes except allowed ones
+                    // Remove ALL style attributes and classes
+                    element.removeAttribute('style');
+                    element.removeAttribute('class');
+                    element.removeAttribute('id');
+                    
+                    // Remove all other attributes except allowed ones
                     const attributes = Array.from(element.attributes);
                     attributes.forEach(attr => {
                       if (!allowedAttributes.includes(attr.name)) {
@@ -115,15 +110,15 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                       }
                     });
                     
-                    // For images, only keep src and alt attributes
+                    // For images, only keep src and alt attributes, no styling
                     if (element.tagName.toLowerCase() === 'img') {
                       const src = element.getAttribute('src');
                       const alt = element.getAttribute('alt') || 'Image';
-                      element.outerHTML = `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto;" />`;
+                      element.outerHTML = `<img src="${src}" alt="${alt}" />`;
                       return;
                     }
                     
-                    // For bold text, convert to <strong>
+                    // For bold text, convert to <strong> without styling
                     if (element.tagName.toLowerCase() === 'b') {
                       element.outerHTML = `<strong>${element.innerHTML}</strong>`;
                       return;
@@ -163,7 +158,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               },
               paste_data_images: true,
               paste_as_text: false,
-              paste_enable_default_filters: false,
+              paste_enable_default_filters: true,
               paste_word_valid_elements: 'h1,h2,h3,h4,h5,h6,strong,b,img,table,thead,tbody,tr,th,td,ul,ol,li,form,input,textarea,select,option,button,label',
               paste_retain_style_properties: '',
               paste_remove_styles_if_webkit: true,
