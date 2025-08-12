@@ -13,15 +13,15 @@ export const Preview: React.FC<PreviewProps> = ({ content = 'Preview' }) => {
         <div 
           className="prose prose-sm"
           dangerouslySetInnerHTML={{ __html: content }}
-          style={{
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.6',
-            padding: '24px',
-            backgroundColor: '#ffffff',
-            color: '#171717',
-            minHeight: '100%'
-          }}
+                      style={{
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              padding: '24px',
+              backgroundColor: '#ffffff',
+              color: '#171717',
+              minHeight: '100%'
+            }}
         />
       </div>
     </div>
