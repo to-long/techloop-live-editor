@@ -29,6 +29,21 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## TinyMCE Editor
+
+This project uses TinyMCE as the rich text editor. To get started:
+
+1. Get a free API key from [TinyMCE Cloud](https://www.tiny.cloud/)
+2. Replace `"your-tinymce-api-key"` in `src/components/MarkdownEditor.tsx` with your actual API key
+3. The editor is configured with a clean, minimal toolbar for fast editing
+
+### Features
+- Rich text formatting (bold, italic, headings, lists)
+- Text alignment options
+- Paste from Word/HTML with formatting preserved
+- Clean, modern interface
+- Responsive design
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
