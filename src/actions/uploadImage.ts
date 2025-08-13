@@ -6,7 +6,6 @@ import { ImageWithUrl } from '@/types/common';
 const apiBaseUrl = process.env.API_BASE_URL || 'https://api.techloop.vn/api/v1'
 const chunkSize = parseInt(process.env.UPLOAD_MAX_FILES || '30', 10)
 const token = process.env.TECHLOOP_TOKEN || ''
-const coolDownBetweenBatches = parseInt(process.env.UPLOAD_COOL_DOWN || '60', 10)*1000
 
 export const uploadToTechloop = async (images: ImageWithUrl[]) => {
   const headers = {
@@ -19,7 +18,6 @@ export const uploadToTechloop = async (images: ImageWithUrl[]) => {
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
   };
 
-  const chunkSize = parseInt(process.env.UPLOAD_MAX_FILES || '30', 10);
   const chunks: ImageWithUrl[][] = [];
   
   // Split images into chunks
@@ -78,7 +76,7 @@ export const uploadToTechloop = async (images: ImageWithUrl[]) => {
           const uploadResponse = await fetch(presignItem.url, {
             method: 'PUT',
             headers: { 'content-type': '*/*' },
-            body: image.buffer
+            body: new Blob([image.buffer as unknown as ArrayBuffer])
           });
 
           if (uploadResponse.ok) {
