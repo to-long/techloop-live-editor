@@ -66,7 +66,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
               toolbar_sticky_offset: 0,
-              content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; padding: 8px; } img { max-width: 100%; height: auto; }',
+              content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; padding: 8px; } img { max-width: 100%; height: auto; }',
               skin: 'snow',
               icons: 'thin',
               content_css: 'default',
