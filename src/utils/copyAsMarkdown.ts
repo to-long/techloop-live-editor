@@ -5,14 +5,10 @@ const turndownService = new TurndownService({
 });
 
 turndownService.addRule("image", {
-  filter: ["img", "picture", "figure"],
+  filter: ["img"],
   replacement: function (content, node) {
-    console.log("node", content);
-    const div = document.createElement("div");
-    div.appendChild(node);
-    const img = div.querySelector("img");
-    const src = img?.getAttribute("src") || "";
-    return src ? `![](${src})` : content;
+    const src = (node as HTMLElement).getAttribute("src");
+    return src ? `![](${src})` : "";
   },
 });
 

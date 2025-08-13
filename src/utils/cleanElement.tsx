@@ -34,6 +34,7 @@ export const cleanElement = (element: Element) => {
     "figure",
     "figcaption",
     "picture",
+    "caption",
     "blockquote",
     "a",
     "section",
@@ -57,6 +58,8 @@ export const cleanElement = (element: Element) => {
   element.removeAttribute("style");
   element.removeAttribute("class");
   element.removeAttribute("id");
+  element.removeAttribute("srcset");
+  element.removeAttribute("sizes");
 
   // Remove all other attributes except allowed ones
   const attributes = Array.from(element.attributes);
@@ -74,6 +77,15 @@ export const cleanElement = (element: Element) => {
     }
     const alt = element.getAttribute("alt") || "Image";
     element.outerHTML = `<img src="${src}" alt="${alt}" />`;
+    return;
+  }
+
+  if (
+    ["a", "caption", "figcaption", "figure", "picture"].includes(
+      element.tagName.toLowerCase()
+    )
+  ) {
+    element.outerHTML = element.innerHTML || "";
     return;
   }
 
