@@ -88,6 +88,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   onAction: function() {
                     toast("Uploading images to Techloop...")
                     replaceImageUrl(editor.getContent()).then(newContent => {
+                      console.log('newContent', newContent);
                       editor.setContent(newContent);
                       toast.dismiss();
                     });
