@@ -3,9 +3,10 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { collectImageUrls } from '@/utils/replaceImageUrl';
+import { replaceImageUrl } from '@/utils/replaceImageUrl';
 import { processImage } from '@/actions/processImage';
 import { cleanElement } from '@/utils/cleanElement';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => ({ default: mod.Editor })), {
@@ -83,31 +84,20 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               setup: function(editor: any) {
                 // Add custom button for inserting image from URL
                 editor.ui.registry.addButton('techloop', {
-                  icon: 'upload',
+                  icon: 'upload',                  
                   tooltip: 'Upload Image to Techloop',
                   onAction: function() {
-                    collectImageUrls(editor.getContent()).then(async imageUrls => {
-                      const result = await processImage(imageUrls);
-                      if (result.success) {
-                        const mapUrl = result.mapUrl || {};
-                        const content = editor.getContent();
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = content;
-                        const images = tempDiv.querySelectorAll('img');
-                        images.forEach(img => {
-                          const src = img.getAttribute('src');
-                          if (src) {
-                            img.setAttribute('src', mapUrl[src]);
-                          }
-                        });
-                        editor.setContent(tempDiv.innerHTML);
-                      }
+                    toast("Uploading images to Techloop...")
+                    replaceImageUrl(editor.getContent()).then(newContent => {
+                      editor.setContent(newContent);
+                      toast.dismiss();
                     });
                   }
                 });
 
                 // Custom paste handler to clean content
                 editor.on('PastePreProcess', function(e: any) {
+                  console.log('PastePreProcess', e.content);
                   const content = e.content;
                   const tempDiv = document.createElement('div');
                   tempDiv.innerHTML = content;
@@ -130,6 +120,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               paste_webkit_styles: ''
           }}
         />
+        <ToastContainer />
       </div>
     </div>
   );

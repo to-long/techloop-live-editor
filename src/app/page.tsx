@@ -12,23 +12,12 @@ export default function Home() {
 
   return (
     <div className="vh-100 w-100 bg-light">
-      <div className="h-100 w-100 d-flex">
-        <div className=" h-100 m-auto " style={{ width: '80%', maxWidth: '1000px' }}>
-          <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
-            <MyEditor
-              className="h-100"
-              onContentChange={handleContentChange}
-              content={content}
-            />
-          </div>
-        </div>
-        
-        {/* Right half - Preview */}
-        {/* <div className="w-50 h-100 ">
-          <div className="h-100 w-100 bg-white rounded shadow overflow-auto">
-            <Preview content={content} />
-          </div>
-        </div> */}
+      <div className="h-100 w-100 m-auto bg-white rounded shadow overflow-hidden" style={{ maxWidth: '1000px' }}>
+        <MyEditor
+          className="h-100"
+          onContentChange={handleContentChange}
+          content={content}
+        />
       </div>
     </div>
   );

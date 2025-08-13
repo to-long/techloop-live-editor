@@ -1,4 +1,8 @@
-export const collectImageUrls = async (content: string) => {
+'use client';
+
+import { processImage } from "@/actions/processImage";
+
+export const replaceImageUrl = async (content: string) => {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = content;
   const images = tempDiv.querySelectorAll('img');
@@ -9,5 +13,18 @@ export const collectImageUrls = async (content: string) => {
       imageUrls.push(src);
     }
   });
-  return imageUrls;
+  const result = await processImage(imageUrls);
+  if (result.success) {
+    const mapUrl = result.mapUrl || {};
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const images = tempDiv.querySelectorAll('img');
+    images.forEach(img => {
+      const src = img.getAttribute('src');
+      if (src) {
+        img.setAttribute('src', mapUrl[src]);
+      }
+    });
+  }
+  return tempDiv.innerHTML;
 };

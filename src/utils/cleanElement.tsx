@@ -1,6 +1,8 @@
+'use client';
+
 export const cleanElement = (element: Element) => {
   // Keep only allowed tags
-  const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'picture', 'blockquote', 'a'];
+  const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'picture', 'blockquote', 'a', 'section', 'article', 'main'];
   const allowedAttributes = ['src', 'alt', 'style', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
   
   // Remove ALL style attributes and classes
@@ -22,6 +24,7 @@ export const cleanElement = (element: Element) => {
       src = src.split('?')[0]; // Example: image.jpg?v=123 -> image.jpg
       src = src.replace(/-\d+x\d+(?=\.[a-zA-Z0-9]+$)/, ''); // Example: image-1200x720.jpg -> image.jpg
     }
+    console.log('>>>>>>>> img', src);
     const alt = element.getAttribute('alt') || 'Image';
     element.outerHTML = `<img src="${src}" alt="${alt}" />`;
     return;
