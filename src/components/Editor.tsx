@@ -60,8 +60,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'emoticons', 'pagebreak', 'quickbars', 'save'
               ],
               toolbar: [
-                'blocks align',
-                'bullist numlist outdent indent',
+                'blocks align bullist numlist outdent indent',
                 'link image media table code',
                 'techloop copy'
               ].join(' | '),
