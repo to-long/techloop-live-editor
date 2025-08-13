@@ -9,6 +9,5 @@ export const collectImageUrls = async (content: string) => {
       imageUrls.push(src);
     }
   });
-  console.log('run here', imageUrls);
   return imageUrls;
 };

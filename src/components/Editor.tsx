@@ -85,8 +85,22 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   icon: 'upload',
                   tooltip: 'Upload Image to Techloop',
                   onAction: function() {
-                    collectImageUrls(editor.getContent()).then(imageUrls => {
-                      processImage(imageUrls);
+                    collectImageUrls(editor.getContent()).then(async imageUrls => {
+                      const result = await processImage(imageUrls);
+                      if (result.success) {
+                        const mapUrl = result.mapUrl || {};
+                        const content = editor.getContent();
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = content;
+                        const images = tempDiv.querySelectorAll('img');
+                        images.forEach(img => {
+                          const src = img.getAttribute('src');
+                          if (src) {
+                            img.setAttribute('src', mapUrl[src]);
+                          }
+                        });
+                        editor.setContent(tempDiv.innerHTML);
+                      }
                     });
                   }
                 });

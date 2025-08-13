@@ -1,22 +1,33 @@
 'use server';
 
+import { ImageWithUrl } from '@/types/common';
+import { downloadImage } from './downloadImage';
+import { uploadToTechloop } from './uploadImage';
+
 export async function processImage(imageUrls: string[]) {
   try {
     console.log(imageUrls);
-    // const response = await fetch('https://techloop.ai/api/v1/images', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ imageUrls }),
-    // });
-    // const data = await response.json();
-    // return data;
-
-  } catch (error) {
-    console.error('Error collecting image URLs:', error);
+    const imageBuffers: ImageWithUrl[] = [];
+    for (const url of imageUrls) {
+      const domain = new URL(url).hostname;
+      let buffer = undefined;
+      if (domain !== 'techloop.vn') {
+        buffer = await downloadImage(url);
+      }
+      imageBuffers.push({
+        buffer,
+        url
+      });
+    }
+    const mapUrl = await uploadToTechloop(imageBuffers.filter(image => image.buffer !== undefined));
+    return {
+      success: true,
+      mapUrl,
+    }
+  } catch (error) {    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-      imageUrls: [],
-      count: 0
     };
   }
 }

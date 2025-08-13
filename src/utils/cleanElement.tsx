@@ -17,7 +17,11 @@ export const cleanElement = (element: Element) => {
   });
   
   if (element.tagName.toLowerCase() === 'img') {
-    const src = element.getAttribute('src');
+    let src = element.getAttribute('src');
+    if (src) {
+      src = src.split('?')[0]; // Example: image.jpg?v=123 -> image.jpg
+      src = src.replace(/-\d+x\d+(?=\.[a-zA-Z0-9]+$)/, ''); // Example: image-1200x720.jpg -> image.jpg
+    }
     const alt = element.getAttribute('alt') || 'Image';
     element.outerHTML = `<img src="${src}" alt="${alt}" />`;
     return;
