@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="vh-100 w-100 bg-light">
       <div className="h-100 w-100 d-flex">
-        <div className=" h-100 m-auto " style={{ width: '80x%' }}>
+        <div className=" h-100 m-auto " style={{ width: '80%', maxWidth: '1000px' }}>
           <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <MyEditor
               className="h-100"

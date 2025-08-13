@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { collectImageUrls } from '@/utils/replaceImageUrl';
+import { processImage } from '@/actions/processImage';
+import { cleanElement } from '@/utils/cleanElement';
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => ({ default: mod.Editor })), {
@@ -25,7 +28,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   useEffect(() => {
     setIsClient(true);
     onContentChange(localStorage.getItem('content') || '');
-  }, [ onContentChange ]);
+  }, [onContentChange]);
 
   const handleEditorChange = (content: string) => {
     localStorage.setItem('content', content);
@@ -33,13 +36,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   if (!isClient) {
-    return (
-      <div className={`tinymce-editor h-100 d-flex flex-column ${className}`}>
-        <div className="editor-container flex-fill d-flex align-items-center justify-content-center">
-          <div className="text-muted">Loading editor...</div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -88,82 +85,18 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   icon: 'upload',
                   tooltip: 'Upload Image to Techloop',
                   onAction: function() {
-                    const url = prompt('Enter image URL:');
-                    if (url) {
-                      editor.insertContent('<img src="' + url + '" alt="Image" style="max-width: 100%; height: auto;" />');
-                    }
+                    collectImageUrls(editor.getContent()).then(imageUrls => {
+                      processImage(imageUrls);
+                    });
                   }
                 });
 
                 // Custom paste handler to clean content
                 editor.on('PastePreProcess', function(e: any) {
                   const content = e.content;
-                  
-                  // Create a temporary div to parse the HTML
                   const tempDiv = document.createElement('div');
                   tempDiv.innerHTML = content;
-                  
-                  // Function to clean elements recursively
-                  function cleanElement(element: Element) {
-                    // Keep only allowed tags
-                    const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'img', 'p', 'br', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'form', 'input', 'textarea', 'select', 'option', 'label', 'figure', 'figcaption', 'picture', 'blockquote', 'a'];
-                    const allowedAttributes = ['src', 'alt', 'style', 'type', 'name', 'value', 'placeholder', 'required', 'disabled', 'readonly'];
-                    
-                    // Remove ALL style attributes and classes
-                    element.removeAttribute('style');
-                    element.removeAttribute('class');
-                    element.removeAttribute('id');
-                    
-                    // Remove all other attributes except allowed ones
-                    const attributes = Array.from(element.attributes);
-                    attributes.forEach(attr => {
-                      if (!allowedAttributes.includes(attr.name)) {
-                        element.removeAttribute(attr.name);
-                      }
-                    });
-                    
-                    if (element.tagName.toLowerCase() === 'img') {
-                      const src = element.getAttribute('src');
-                      const alt = element.getAttribute('alt') || 'Image';
-                      element.outerHTML = `<img src="${src}" alt="${alt}" />`;
-                      return;
-                    }
-                    
-                    // For bold text, convert to <strong> without styling
-                    if (element.tagName.toLowerCase() === 'strong') {
-                      element.outerHTML = `<b>${element.innerHTML}</b>`;
-                      return;
-                    }
-
-                    // Remove elements that are not allowed
-                    if (!allowedTags.includes(element.tagName.toLowerCase())) {
-                      // If it's a text node or allowed element, keep it
-                      if (element.nodeType === Node.TEXT_NODE || allowedTags.includes(element.tagName.toLowerCase())) {
-                        // Keep the content but clean children
-                        const children = Array.from(element.children);
-                        children.forEach(child => {
-                          if (!allowedTags.includes(child.tagName.toLowerCase())) {
-                            // Replace with just the text content
-                            child.outerHTML = child.textContent || '';
-                          } else {
-                            cleanElement(child);
-                          }
-                        });
-                      } else {
-                        // Replace with text content
-                        element.outerHTML = element.textContent || '';
-                      }
-                    } else {
-                      // Clean children of allowed elements
-                      const children = Array.from(element.children);
-                      children.forEach(child => cleanElement(child));
-                    }
-                  }
-                  
-                  // Clean the content
                   cleanElement(tempDiv);
-                  
-                  // Update the paste content
                   e.content = tempDiv.innerHTML;
                 });
               },
