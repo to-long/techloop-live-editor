@@ -1,7 +1,6 @@
 'use client';
 
 import { MyEditor } from '@/components/Editor';
-import { Preview } from '@/components/Preview';
 import { useState } from 'react';
 
 export default function Home() {
@@ -14,8 +13,7 @@ export default function Home() {
   return (
     <div className="vh-100 w-100 bg-light">
       <div className="h-100 w-100 d-flex">
-        {/* Left half - Editor */}
-        <div className="w-50 h-100 ">
+        <div className=" h-100 m-auto " style={{ width: '80x%' }}>
           <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
             <MyEditor
               className="h-100"
@@ -26,11 +24,11 @@ export default function Home() {
         </div>
         
         {/* Right half - Preview */}
-        <div className="w-50 h-100 ">
+        {/* <div className="w-50 h-100 ">
           <div className="h-100 w-100 bg-white rounded shadow overflow-auto">
             <Preview content={content} />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -49,43 +49,43 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
           apiKey="rxsu0ox8enqzvhq1utetup9eh9z2y5fh5o42jbe29ppkg4n9"
           value={content}
           onEditorChange={handleEditorChange}
-                      init={{
+            init={{
               height: '100%',
               menubar: false,
               plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
                 'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
                 'nonbreaking',
                 'emoticons', 'pagebreak', 'quickbars', 'save'
               ],
               toolbar: [
-                'alignleft aligncenter alignright alignjustify',
-                'bullist numlist',
-                'outdent indent',
-                'link image media table code | techloop'
-              ].join(' '),
+                'blocks align',
+                'bullist numlist outdent indent',
+                'link image media table code',
+                'techloop copy'
+              ].join(' | '),
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
               toolbar_sticky_offset: 0,
               content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; padding: 8px; } img { max-width: 100%; height: auto; }',
-              skin: 'oxide',
+              skin: 'snow',
+              icons: 'thin',
               content_css: 'default',
               resize: false,
               branding: false,
               elementpath: false,
-              statusbar: true,
+              statusbar: false,
               statusbar_items: 'wordcount | charactercount',
               min_height: 300,
               max_height: 800,
               contextmenu: 'link image table configurepermanentpen',
-              quickbars_selection_toolbar: 'bold h1 h2 h3 quicklink blockquote',
+              quickbars_selection_toolbar: 'bold blocks quicklink blockquote',
               // quickbars_insert_toolbar: 'h1 h2 h3 insertimageurl',
 
               setup: function(editor: any) {
                 // Add custom button for inserting image from URL
                 editor.ui.registry.addButton('techloop', {
-                  // text: '<img src="/icon.png" />',
                   icon: 'upload',
                   tooltip: 'Upload Image to Techloop',
                   onAction: function() {
@@ -95,9 +95,6 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                     }
                   }
                 });
-
-                editor.ui.registry.addIcon('techloop', '/icon.png');
-
 
                 // Custom paste handler to clean content
                 editor.on('PastePreProcess', function(e: any) {
@@ -134,11 +131,11 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                     }
                     
                     // For bold text, convert to <strong> without styling
-                    if (element.tagName.toLowerCase() === 'b') {
-                      element.outerHTML = `<strong>${element.innerHTML}</strong>`;
+                    if (element.tagName.toLowerCase() === 'strong') {
+                      element.outerHTML = `<b>${element.innerHTML}</b>`;
                       return;
                     }
-                    
+
                     // Remove elements that are not allowed
                     if (!allowedTags.includes(element.tagName.toLowerCase())) {
                       // If it's a text node or allowed element, keep it
