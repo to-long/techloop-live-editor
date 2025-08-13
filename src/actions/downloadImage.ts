@@ -40,7 +40,7 @@ const resizeImage = async (buffer: Buffer<ArrayBuffer>) => {
 
   if (width && height && (width < minDimension || height < minDimension)) {
     // Scale up so that the smallest dimension is 1200, maintaining aspect ratio
-    const targetSize = 1200;
+    const targetSize = minDimension
     const resizeOptions: { width?: number; height?: number; } = {};
     if (width < height) {
       resizeOptions.width = targetSize;
@@ -48,6 +48,15 @@ const resizeImage = async (buffer: Buffer<ArrayBuffer>) => {
       resizeOptions.height = targetSize;
     }
     image = image.resize(resizeOptions);
+
+  // Optimize image for web: convert to JPEG, set quality, enable progressive, strip metadata
+  image = image
+    .jpeg({
+      quality: 80, 
+      progressive: true,
+      mozjpeg: true,
+    })
+    .withMetadata(); 
   }
   return image.toBuffer();
 };
