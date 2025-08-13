@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <div className="vh-100 w-100 bg-light">
-      <div className="h-100 w-100 m-auto bg-white rounded shadow overflow-hidden" style={{ maxWidth: '1000px' }}>
+      <div className="h-100 w-100 m-auto bg-white rounded shadow overflow-hidden" style={{ maxWidth: '1200px' }}>
         <MyEditor
           className="h-100"
           onContentChange={handleContentChange}
