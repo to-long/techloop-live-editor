@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { replaceImageUrl } from '@/utils/replaceImageUrl';
-import { processImage } from '@/actions/processImage';
 import { cleanElement } from '@/utils/cleanElement';
 import { toast, ToastContainer } from 'react-toastify';
 import { copyHtmlToMarkdown } from '@/utils/copyAsMarkdown';
