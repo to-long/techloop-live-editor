@@ -20,6 +20,7 @@ export default function Home() {
             <MyEditor
               className="h-100"
               onContentChange={handleContentChange}
+              content={content}
             />
           </div>
         </div>

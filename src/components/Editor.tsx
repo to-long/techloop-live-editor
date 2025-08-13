@@ -10,24 +10,26 @@ const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => ({ def
 });
 
 interface MarkdownEditorProps {
+  content: string;
+  onContentChange: (content: string) => void;
   className?: string;
-  onContentChange?: (content: string) => void;
 }
 
 export const MyEditor: React.FC<MarkdownEditorProps> = ({
-  className = '',
   onContentChange,
+  content,
+  className = '',
 }) => {
-  const [content, setContent] = useState('');
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    onContentChange(localStorage.getItem('content') || '');
+  }, [ onContentChange ]);
 
   const handleEditorChange = (content: string) => {
-    setContent(content);
-    onContentChange?.(content);
+    localStorage.setItem('content', content);
+    onContentChange(content);
   };
 
   if (!isClient) {
