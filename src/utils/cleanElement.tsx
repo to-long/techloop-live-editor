@@ -74,6 +74,14 @@ export const cleanElement = (element: Element) => {
     if (src) {
       src = src.split("?")[0]; // Example: image.jpg?v=123 -> image.jpg
       src = src.replace(/-\d+x\d+(?=\.[a-zA-Z0-9]+$)/, ""); // Example: image-1200x720.jpg -> image.jpg
+      const httpsCount = (src.match(/https:\/\//g) || []).length;
+      if (httpsCount >= 2) {
+        // Find the index of the last "https://"
+        const lastHttpsIndex = src.lastIndexOf("https://");
+        if (lastHttpsIndex !== -1) {
+          src = src.substring(lastHttpsIndex);
+        }
+      }
     }
     const alt = element.getAttribute("alt") || "Image";
     element.outerHTML = `<img src="${src}" alt="${alt}" />`;
