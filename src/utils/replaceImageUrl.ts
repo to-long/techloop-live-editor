@@ -16,6 +16,7 @@ export const replaceImageUrl = async (content: string) => {
   const result = await processImage(imageUrls);
   if (result.success) {
     const mapUrl = result.mapUrl || {};
+    console.log("mapUrl", mapUrl);
     images.forEach((img) => {
       const src = img.getAttribute("src");
       if (src) {
