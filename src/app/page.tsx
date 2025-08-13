@@ -26,7 +26,7 @@ export default function Home() {
         
         {/* Right half - Preview */}
         <div className="w-50 h-100 ">
-          <div className="h-100 w-100 bg-white rounded shadow overflow-hidden">
+          <div className="h-100 w-100 bg-white rounded shadow overflow-auto">
             <Preview content={content} />
           </div>
         </div>

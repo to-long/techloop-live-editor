@@ -21,7 +21,6 @@ export const Preview: React.FC<PreviewProps> = ({ content = 'Preview' }) => {
               backgroundColor: '#ffffff',
               color: '#171717',
               minHeight: '100%',
-              overflow: 'auto'
             }}
         />
       </div>

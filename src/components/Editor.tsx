@@ -61,7 +61,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'alignleft aligncenter alignright alignjustify',
                 'bullist numlist',
                 'outdent indent',
-                'link image media table | code '
+                'link image media table code | techloop'
               ].join(' '),
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
@@ -82,6 +82,20 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
 
               setup: function(editor: any) {
                 // Add custom button for inserting image from URL
+                editor.ui.registry.addButton('techloop', {
+                  // text: '<img src="/icon.png" />',
+                  icon: 'upload',
+                  tooltip: 'Upload Image to Techloop',
+                  onAction: function() {
+                    const url = prompt('Enter image URL:');
+                    if (url) {
+                      editor.insertContent('<img src="' + url + '" alt="Image" style="max-width: 100%; height: auto;" />');
+                    }
+                  }
+                });
+
+                editor.ui.registry.addIcon('techloop', '/icon.png');
+
 
                 // Custom paste handler to clean content
                 editor.on('PastePreProcess', function(e: any) {
