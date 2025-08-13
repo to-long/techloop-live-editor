@@ -7,6 +7,7 @@ import { replaceImageUrl } from '@/utils/replaceImageUrl';
 import { processImage } from '@/actions/processImage';
 import { cleanElement } from '@/utils/cleanElement';
 import { toast, ToastContainer } from 'react-toastify';
+import { copyHtmlToMarkdown } from '@/utils/copyAsMarkdown';
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => ({ default: mod.Editor })), {
@@ -55,13 +56,12 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
                 'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
-                'nonbreaking',
-                'emoticons', 'pagebreak', 'quickbars', 'save'
+                'nonbreaking', 'emoticons', 'pagebreak', 'quickbars', 'save', 'markdown'
               ],
               toolbar: [
                 'blocks align bullist numlist outdent indent',
                 'link image media table code',
-                'techloop copy'
+                'techloop copyToMarkdown'
               ].join(' | '),
               toolbar_mode: 'wrap',
               toolbar_sticky: true,
@@ -92,6 +92,14 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                       editor.setContent(newContent);
                       toast.dismiss();
                     });
+                  }
+                });
+
+                editor.ui.registry.addButton('copyToMarkdown', {
+                  icon: 'copy',
+                  tooltip: 'Copy to Markdown',
+                  onAction: function() {
+                    copyHtmlToMarkdown(editor.getContent());
                   }
                 });
 
