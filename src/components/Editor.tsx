@@ -155,7 +155,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 tooltip: "Show chat",
                 onAction: (api: any) => {
                   toggleLayout();
-                  api.setActive(layout === "editor");
+                  api.setActive(!api.isActive());
                 },
                 onSetup: (api: any) => {
                   api.setActive(layout === "chat");
