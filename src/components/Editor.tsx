@@ -7,6 +7,7 @@ import { replaceImageUrl } from "@/utils/replaceImageUrl";
 import { cleanElement } from "@/utils/cleanElement";
 import { toast, ToastContainer } from "react-toastify";
 import { copyHtmlToMarkdown } from "@/utils/copyAsMarkdown";
+import { EditorOptions } from "@/types/common";
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(
@@ -34,6 +35,9 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   className = "",
 }) => {
   const [isClient, setIsClient] = useState(false);
+  const [editorOptions, setEditorOptions] = useState<EditorOptions>({
+    keepLinks: false,
+  });
 
   useEffect(() => {
     setIsClient(true);
@@ -85,7 +89,8 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             ],
             toolbar: [
               "blocks align bullist numlist outdent indent",
-              "link image media table code",
+              "link image media table",
+              "keepLinks code",
               "techloop copyToMarkdown",
             ].join(" | "),
             toolbar_mode: "wrap",
@@ -129,12 +134,28 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 },
               });
 
+              editor.ui.registry.addToggleButton("keepLinks", {
+                icon: "unlink",
+                tooltip: "Keep links",
+                onAction: (api: any) => {
+                  const keepLinks = !api.isActive();
+                  api.setActive(keepLinks);
+                  setEditorOptions({
+                    ...editorOptions,
+                    keepLinks,
+                  });
+                },
+                onSetup: (api: any) => {
+                  api.setActive(true);
+                },
+              });
+
               // Custom paste handler to clean content
               editor.on("PastePreProcess", function (e: any) {
                 const content = e.content;
                 const tempDiv = document.createElement("div");
                 tempDiv.innerHTML = content;
-                cleanElement(tempDiv);
+                cleanElement(tempDiv, editorOptions);
                 e.content = tempDiv.innerHTML;
               });
             },

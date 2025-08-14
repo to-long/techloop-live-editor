@@ -1,6 +1,11 @@
 "use client";
 
-export const cleanElement = (element: Element) => {
+import { EditorOptions } from "@/types/common";
+
+export const cleanElement = (
+  element: Element,
+  editorOptions?: EditorOptions
+) => {
   // Keep only allowed tags
   const allowedTags = [
     "h1",
@@ -52,6 +57,7 @@ export const cleanElement = (element: Element) => {
     "required",
     "disabled",
     "readonly",
+    "href",
   ];
 
   // Remove ALL style attributes and classes
@@ -89,7 +95,7 @@ export const cleanElement = (element: Element) => {
   }
 
   if (
-    ["a", "caption", "figcaption", "figure", "picture"].includes(
+    ["caption", "figcaption", "figure", "picture"].includes(
       element.tagName.toLowerCase()
     )
   ) {
