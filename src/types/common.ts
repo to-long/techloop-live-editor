@@ -3,3 +3,5 @@ export type ImageWithUrl = {
   buffer?: Buffer;
   techloopUrl?: string;
 };
+
+export type Layout = "editor" | "chat";

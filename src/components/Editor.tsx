@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { replaceImageUrl } from "@/utils/replaceImageUrl";
 import { cleanElement } from "@/utils/cleanElement";
+import { useLayoutStore } from "@/store/layoutStore";
 import { toast, ToastContainer } from "react-toastify";
 import { copyHtmlToMarkdown } from "@/utils/copyAsMarkdown";
 
@@ -34,6 +35,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   className = "",
 }) => {
   const [isClient, setIsClient] = useState(false);
+  const { layout, toggleLayout } = useLayoutStore();
 
   useEffect(() => {
     setIsClient(true);
@@ -86,13 +88,13 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             toolbar: [
               "blocks align bullist numlist outdent indent link image media table",
               "keepLinks code",
-              "techloop copyToMarkdown",
+              "techloop copyToMarkdown showChat",
             ].join(" | "),
             toolbar_mode: "wrap",
             toolbar_sticky: true,
             toolbar_sticky_offset: 0,
             content_style:
-              'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; padding: 8px; } img { max-width: 100%; height: auto; }',
+              'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; padding: 8px; } img { max-width: 100%; height: auto }',
             skin: "snow",
             icons: "thin",
             content_css: "default",
@@ -113,10 +115,16 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 icon: "upload",
                 tooltip: "Upload Image to Techloop",
                 onAction: function () {
-                  toast("Uploading images to Techloop...");
+                  const id = toast("Uploading images to Techloop...", {
+                    autoClose: 15000,
+                  });
                   replaceImageUrl(editor.getContent()).then((newContent) => {
                     editor.setContent(newContent);
-                    toast.dismiss();
+                    toast.dismiss(id);
+                    toast("Images uploaded to Techloop", {
+                      type: "success",
+                      hideProgressBar: true,
+                    });
                   });
                 },
               });
@@ -131,14 +139,26 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
 
               editor.ui.registry.addToggleButton("keepLinks", {
                 icon: "unlink",
-                tooltip: "Keep links",
+                tooltip: "Not remove links",
                 onAction: (api: any) => {
-                  const keepLinks = !api.isActive();
-                  api.setActive(keepLinks);
-                  localStorage.setItem("keepLinks", keepLinks.toString());
+                  const nextState = !api.isActive();
+                  api.setActive(nextState);
+                  localStorage.setItem("keepLinks", nextState.toString());
                 },
                 onSetup: (api: any) => {
-                  api.setActive(localStorage.getItem("keepLinks") !== "true");
+                  api.setActive(localStorage.getItem("keepLinks") === "true");
+                },
+              });
+
+              editor.ui.registry.addToggleButton("showChat", {
+                icon: "language",
+                tooltip: "Show chat",
+                onAction: (api: any) => {
+                  toggleLayout();
+                  api.setActive(layout === "editor");
+                },
+                onSetup: (api: any) => {
+                  api.setActive(layout === "chat");
                 },
               });
 
@@ -167,7 +187,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             paste_webkit_styles: "",
           }}
         />
-        <ToastContainer />
+        <ToastContainer autoClose={3000} position="bottom-right" />
       </div>
     </div>
   );
