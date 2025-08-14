@@ -56,7 +56,10 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   }
 
   return (
-    <div className={`tinymce-editor h-100 d-flex flex-column ${className}`}>
+    <div
+      className={`tinymce-editor h-100 d-flex flex-column ${className} m-auto border`}
+      style={{ maxWidth: "1200px" }}
+    >
       <div className="editor-container flex-fill">
         <Editor
           apiKey="rxsu0ox8enqzvhq1utetup9eh9z2y5fh5o42jbe29ppkg4n9"
