@@ -3,7 +3,3 @@ export type ImageWithUrl = {
   buffer?: Buffer;
   techloopUrl?: string;
 };
-
-export type EditorOptions = {
-  keepLinks: boolean;
-};

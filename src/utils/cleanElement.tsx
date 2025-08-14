@@ -1,64 +1,65 @@
 "use client";
 
-import { EditorOptions } from "@/types/common";
+const defaultAllowedTags = [
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "strong",
+  "b",
+  "img",
+  "p",
+  "br",
+  "div",
+  "span",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td",
+  "ul",
+  "ol",
+  "li",
+  "form",
+  "input",
+  "textarea",
+  "select",
+  "option",
+  "label",
+  "figure",
+  "figcaption",
+  "picture",
+  "caption",
+  "blockquote",
+  "section",
+  "article",
+  "main",
+];
+const defaultAllowedAttributes = [
+  "src",
+  "alt",
+  "style",
+  "type",
+  "name",
+  "value",
+  "placeholder",
+  "required",
+  "disabled",
+  "readonly",
+];
 
-export const cleanElement = (
-  element: Element,
-  editorOptions?: EditorOptions
-) => {
-  // Keep only allowed tags
-  const allowedTags = [
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "strong",
-    "b",
-    "img",
-    "p",
-    "br",
-    "div",
-    "span",
-    "table",
-    "thead",
-    "tbody",
-    "tr",
-    "th",
-    "td",
-    "ul",
-    "ol",
-    "li",
-    "form",
-    "input",
-    "textarea",
-    "select",
-    "option",
-    "label",
-    "figure",
-    "figcaption",
-    "picture",
-    "caption",
-    "blockquote",
-    "a",
-    "section",
-    "article",
-    "main",
-  ];
-  const allowedAttributes = [
-    "src",
-    "alt",
-    "style",
-    "type",
-    "name",
-    "value",
-    "placeholder",
-    "required",
-    "disabled",
-    "readonly",
-    "href",
-  ];
+export const cleanElement = (element: Element) => {
+  const keepLinks = localStorage.getItem("keepLinks") === "true";
+  console.log("keepLinks", keepLinks);
+  const allowedTags = keepLinks
+    ? [...defaultAllowedTags, "a"]
+    : defaultAllowedTags;
+  const allowedAttributes = keepLinks
+    ? [...defaultAllowedAttributes, "href"]
+    : defaultAllowedAttributes;
 
   // Remove ALL style attributes and classes
   element.removeAttribute("style");

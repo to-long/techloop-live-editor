@@ -7,7 +7,6 @@ import { replaceImageUrl } from "@/utils/replaceImageUrl";
 import { cleanElement } from "@/utils/cleanElement";
 import { toast, ToastContainer } from "react-toastify";
 import { copyHtmlToMarkdown } from "@/utils/copyAsMarkdown";
-import { EditorOptions } from "@/types/common";
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(
@@ -35,9 +34,6 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   className = "",
 }) => {
   const [isClient, setIsClient] = useState(false);
-  const [editorOptions, setEditorOptions] = useState<EditorOptions>({
-    keepLinks: false,
-  });
 
   useEffect(() => {
     setIsClient(true);
@@ -88,8 +84,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               "markdown",
             ],
             toolbar: [
-              "blocks align bullist numlist outdent indent",
-              "link image media table",
+              "blocks align bullist numlist outdent indent link image media table",
               "keepLinks code",
               "techloop copyToMarkdown",
             ].join(" | "),
@@ -140,13 +135,10 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 onAction: (api: any) => {
                   const keepLinks = !api.isActive();
                   api.setActive(keepLinks);
-                  setEditorOptions({
-                    ...editorOptions,
-                    keepLinks,
-                  });
+                  localStorage.setItem("keepLinks", keepLinks.toString());
                 },
                 onSetup: (api: any) => {
-                  api.setActive(true);
+                  api.setActive(localStorage.getItem("keepLinks") !== "true");
                 },
               });
 
@@ -155,7 +147,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 const content = e.content;
                 const tempDiv = document.createElement("div");
                 tempDiv.innerHTML = content;
-                cleanElement(tempDiv, editorOptions);
+                cleanElement(tempDiv);
                 e.content = tempDiv.innerHTML;
               });
             },
