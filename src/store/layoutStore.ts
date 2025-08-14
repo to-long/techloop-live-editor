@@ -1,3 +1,5 @@
+"use client";
+
 import { create } from "zustand";
 
 type Layout = "editor" | "chat";
@@ -9,9 +11,14 @@ interface LayoutState {
 }
 
 export const useLayoutStore = create<LayoutState>((set, get) => ({
-  layout: (localStorage.getItem("layout") as Layout) ?? "editor",
+  layout:
+    (typeof window !== "undefined"
+      ? (localStorage.getItem("layout") as Layout)
+      : null) ?? "editor",
   setLayout: (layout: Layout) => {
-    localStorage.setItem("layout", layout);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("layout", layout);
+    }
     set({ layout });
   },
   toggleLayout: () => {

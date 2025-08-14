@@ -39,11 +39,15 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
 
   useEffect(() => {
     setIsClient(true);
-    onContentChange(localStorage.getItem("content") || "");
+    if (typeof window !== "undefined") {
+      onContentChange(localStorage.getItem("content") || "");
+    }
   }, [onContentChange]);
 
   const handleEditorChange = (content: string) => {
-    localStorage.setItem("content", content);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("content", content);
+    }
     onContentChange(content);
   };
 
@@ -143,10 +147,14 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 onAction: (api: any) => {
                   const nextState = !api.isActive();
                   api.setActive(nextState);
-                  localStorage.setItem("keepLinks", nextState.toString());
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("keepLinks", nextState.toString());
+                  }
                 },
                 onSetup: (api: any) => {
-                  api.setActive(localStorage.getItem("keepLinks") === "true");
+                  if (typeof window !== "undefined") {
+                    api.setActive(localStorage.getItem("keepLinks") === "true");
+                  }
                 },
               });
 
