@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { replaceImageUrl } from "@/utils/replaceImageUrl";
 import { cleanElement } from "@/utils/cleanElement";
 import { useLayoutStore } from "@/store/layoutStore";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { copyHtmlToMarkdown } from "@/utils/copyAsMarkdown";
 
 // Dynamically import TinyMCE to avoid SSR issues
@@ -94,8 +94,8 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             ],
             toolbar: [
               "blocks align bullist numlist outdent indent link image media table",
-              "keepLinks code",
-              "techloop copyToMarkdown showChat",
+              "keepLinks techloop",
+              "copyToMarkdown showChat",
             ].join(" | "),
             toolbar_mode: "wrap",
             toolbar_sticky: true,
