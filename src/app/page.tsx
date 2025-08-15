@@ -2,20 +2,28 @@
 
 import { MyEditor } from "@/components/Editor";
 import { useLayoutStore } from "@/store/layoutStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [content, setContent] = useState("");
   const { layout } = useLayoutStore();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
   };
 
+  console.log("change layout", layout);
   return (
     <div className="vh-100 w-100 overflow-hidden">
       <div
-        className={`h-100 d-flex ${layout === "chat" ? "w-100" : "w-200"}`}
+        className={`h-100 d-flex ${
+          layout === "chat" && isClient ? "w-100" : "w-200"
+        }`}
         style={{ width: "200%", transition: "width 200ms" }}
       >
         <div className="h-100 w-50">

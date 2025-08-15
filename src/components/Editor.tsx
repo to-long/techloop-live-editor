@@ -35,7 +35,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
   className = "",
 }) => {
   const [isClient, setIsClient] = useState(false);
-  const { layout, toggleLayout } = useLayoutStore();
+  const { toggleLayout } = useLayoutStore();
 
   useEffect(() => {
     setIsClient(true);
@@ -169,7 +169,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                   api.setActive(!api.isActive());
                 },
                 onSetup: (api: any) => {
-                  api.setActive(layout === "chat");
+                  api.setActive(localStorage.getItem("layout") === "chat");
                 },
               });
 

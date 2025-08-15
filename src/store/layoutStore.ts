@@ -11,10 +11,7 @@ interface LayoutState {
 }
 
 export const useLayoutStore = create<LayoutState>((set, get) => ({
-  layout:
-    (typeof window !== "undefined"
-      ? (localStorage.getItem("layout") as Layout)
-      : null) ?? "editor",
+  layout: "editor",
   setLayout: (layout: Layout) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("layout", layout);
@@ -27,3 +24,14 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     get().setLayout(newLayout);
   },
 }));
+
+// Hydrate layout from localStorage on client
+if (typeof window !== "undefined") {
+  // Use a microtask to ensure zustand store is created before running
+  Promise.resolve().then(() => {
+    const storedLayout = localStorage.getItem("layout") as Layout | null;
+    if (storedLayout === "chat") {
+      useLayoutStore.getState().setLayout(storedLayout);
+    }
+  });
+}
