@@ -17,7 +17,6 @@ export default function Home() {
     setContent(newContent);
   };
 
-  console.log("change layout", layout);
   return (
     <div className="vh-100 w-100 overflow-hidden">
       <div

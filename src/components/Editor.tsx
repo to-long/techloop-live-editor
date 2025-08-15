@@ -176,10 +176,10 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               // Custom paste handler to clean content
               editor.on("PastePreProcess", function (e: any) {
                 const content = e.content;
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = content;
-                cleanElement(tempDiv);
-                e.content = tempDiv.innerHTML;
+                const temp = document.createElement("p");
+                temp.innerHTML = content;
+                cleanElement(temp);
+                e.content = temp.innerHTML;
               });
             },
             paste_data_images: true,
