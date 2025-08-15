@@ -1,6 +1,7 @@
 "use client";
 
 import { processImage } from "@/actions/processImage";
+import { toast } from "react-toastify";
 
 export const replaceImageUrl = async (content: string) => {
   const tempDiv = document.createElement("div");
@@ -13,6 +14,9 @@ export const replaceImageUrl = async (content: string) => {
       imageUrls.push(src);
     }
   });
+  const toastId = toast("Uploading images to Techloop...", {
+    autoClose: images.length * 10000,
+  });
   const result = await processImage(imageUrls);
   if (result.success) {
     const mapUrl = result.mapUrl || {};
@@ -24,5 +28,10 @@ export const replaceImageUrl = async (content: string) => {
       }
     });
   }
+  toast.dismiss(toastId);
+  toast("Images uploaded to Techloop", {
+    type: "success",
+    hideProgressBar: true,
+  });
   return tempDiv.innerHTML;
 };

@@ -122,16 +122,8 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 icon: "upload",
                 tooltip: "Upload Image to Techloop",
                 onAction: function () {
-                  const id = toast("Uploading images to Techloop...", {
-                    autoClose: 15000,
-                  });
                   replaceImageUrl(editor.getContent()).then((newContent) => {
                     editor.setContent(newContent);
-                    toast.dismiss(id);
-                    toast("Images uploaded to Techloop", {
-                      type: "success",
-                      hideProgressBar: true,
-                    });
                   });
                 },
               });
@@ -140,7 +132,15 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
                 icon: "copy",
                 tooltip: "Copy to Markdown",
                 onAction: function () {
-                  copyHtmlToMarkdown(editor.getContent());
+                  const selection =
+                    editor.selection &&
+                    editor.selection.getContent &&
+                    editor.selection.getContent({ format: "html" });
+                  if (selection && selection.trim().length > 0) {
+                    copyHtmlToMarkdown(selection);
+                  } else {
+                    copyHtmlToMarkdown(editor.getContent());
+                  }
                 },
               });
 
@@ -198,7 +198,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             paste_webkit_styles: "",
           }}
         />
-        <ToastContainer autoClose={3000} position="bottom-right" />
+        <ToastContainer autoClose={3000} position="bottom-left" />
       </div>
     </div>
   );
