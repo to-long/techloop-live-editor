@@ -29,6 +29,7 @@ export default function Home() {
           <iframe
             src="https://www.getmerlin.in/chat/9fa7d9f0-b90f-42b2-b6aa-4e0eeb865d28"
             className="h-100 w-100"
+            allow="clipboard-read; clipboard-write"
           />
         </div>
       </div>
