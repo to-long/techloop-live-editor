@@ -83,15 +83,16 @@ export const cleanElement = (element: Element) => {
     Array.from(element.children).forEach((child) => cleanElement(child));
   }
 
-  // Remove the tag if not allowed, keeping its innerHTML
+  // Remove the tag if not allowed, replacing it with a fragment (its children)
   if (!allowedTags.includes(element.tagName.toLowerCase())) {
-    const parent = element.parentNode;
-    if (parent) {
-      // Replace the element with its children (preserving innerHTML)
+    const parent = element.parentNode as Element;
+    if (parent && parent.tagName.toLowerCase() === "p") {
+      // Move all children out of the element, preserving their order
+      const fragment = document.createDocumentFragment();
       while (element.firstChild) {
-        parent.insertBefore(element.firstChild, element);
+        fragment.appendChild(element.firstChild);
       }
-      parent.removeChild(element);
+      parent.replaceChild(fragment, element);
     }
     return;
   }
