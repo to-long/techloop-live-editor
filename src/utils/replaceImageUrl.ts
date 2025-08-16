@@ -6,32 +6,42 @@ import { toast } from "react-toastify";
 export const replaceImageUrl = async (content: string) => {
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = content;
-  const images = tempDiv.querySelectorAll("img");
-  const imageUrls: string[] = [];
-  images.forEach((img) => {
-    const src = img.getAttribute("src");
-    if (src) {
-      imageUrls.push(src);
-    }
-  });
+  const images = Array.from(tempDiv.querySelectorAll("img"));
   const toastId = toast("Uploading images to Techloop...", {
     autoClose: images.length * 10000,
   });
-  const result = await processImage(imageUrls);
-  if (result.success) {
-    const mapUrl = result.mapUrl || {};
-    console.log("mapUrl", mapUrl);
-    images.forEach((img) => {
-      const src = img.getAttribute("src");
-      if (src) {
-        img.setAttribute("src", mapUrl[src]);
+  const failedImages = [];
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    const src = img.getAttribute("src");
+    if (src) {
+      const result = await processImage(src);
+      if (result.success) {
+        img.setAttribute("src", result.techloopUrl);
+      } else {
+        img.setAttribute("data-error", "true");
+        console.log("Upload fail : ", src, result.error);
+        failedImages.push(i);
       }
-    });
+    }
   }
   toast.dismiss(toastId);
-  toast("Images uploaded to Techloop", {
-    type: "success",
-    hideProgressBar: true,
-  });
-  return tempDiv.innerHTML;
+  if (failedImages.length > 0) {
+    toast.error(
+      `fail, ${images.length - failedImages.length} / ${
+        images.length
+      } uploaded`,
+      {
+        autoClose: 10000,
+      }
+    );
+  } else {
+    toast.success(`success, ${images.length} / ${images.length} uploaded`, {
+      autoClose: 3000,
+    });
+  }
+  return {
+    html: tempDiv.innerHTML,
+    failedImages,
+  };
 };

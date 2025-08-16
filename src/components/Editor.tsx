@@ -3,11 +3,11 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { replaceImageUrl } from "@/utils/replaceImageUrl";
 import { cleanElement } from "@/utils/cleanElement";
 import { useLayoutStore } from "@/store/layoutStore";
 import { ToastContainer } from "react-toastify";
 import { copyHtmlToMarkdown } from "@/utils/copyAsMarkdown";
+import { replaceImageUrl } from "@/utils/replaceImageUrl";
 
 // Dynamically import TinyMCE to avoid SSR issues
 const Editor = dynamic(
@@ -121,10 +121,9 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
               editor.ui.registry.addButton("techloop", {
                 icon: "upload",
                 tooltip: "Upload Image to Techloop",
-                onAction: function () {
-                  replaceImageUrl(editor.getContent()).then((newContent) => {
-                    editor.setContent(newContent);
-                  });
+                onAction: async function () {
+                  const result = await replaceImageUrl(editor.getContent());
+                  editor.setContent(result.html);
                 },
               });
 

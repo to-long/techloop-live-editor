@@ -1,33 +1,30 @@
-'use server';
+"use server";
 
-import { ImageWithUrl } from '@/types/common';
-import { downloadImage } from './downloadImage';
-import { uploadToTechloop } from './uploadImage';
+import { downloadImage } from "./downloadImage";
+import { uploadToTechloop } from "./uploadImage";
 
-export async function processImage(imageUrls: string[]) {
+export async function processImage(url: string) {
   try {
-    console.log(imageUrls);
-    const imageBuffers: ImageWithUrl[] = [];
-    for (const url of imageUrls) {
-      const domain = new URL(url).hostname;
-      let buffer = undefined;
-      if (domain !== 'techloop.vn') {
-        buffer = await downloadImage(url);
-      }
-      imageBuffers.push({
+    const domain = new URL(url).hostname;
+    if (domain !== "techloop.vn") {
+      const buffer = await downloadImage(url);
+      const techloopUrl = await uploadToTechloop({
         buffer,
-        url
+        url,
       });
+      return {
+        success: true,
+        techloopUrl,
+      };
     }
-    const mapUrl = await uploadToTechloop(imageBuffers.filter(image => image.buffer !== undefined));
-    return {
-      success: true,
-      mapUrl,
-    }
-  } catch (error) {    
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: "Skip image from techloop.vn already",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
