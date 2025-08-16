@@ -113,7 +113,7 @@ export const MyEditor: React.FC<MarkdownEditorProps> = ({
             min_height: 300,
             max_height: 800,
             contextmenu: "",
-            quickbars_selection_toolbar: "bold blocks quicklink blockquote",
+            quickbars_selection_toolbar: "bold quicklink blockquote",
             quickbars_insert_toolbar: "",
 
             setup: function (editor: any) {
